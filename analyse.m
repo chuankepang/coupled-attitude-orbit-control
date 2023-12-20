@@ -1,0 +1,15 @@
+function out = analyse(X)
+Qr = X(1:4);
+wbi = X(5:7);
+Qm = X(8:11);
+wm = X(12:14);
+Qd = X(15:18);
+wd = X(19:21);
+Euler = QtoEuler(Qr);
+Eulerm = QtoEuler(Qm);
+Eulerd = QtoEuler(Qd);
+dEuler1 = Eulerm-Euler;
+dEuler2 = Eulerd-Euler;
+dw1 = wm-wbi;
+dw2 = wd-wbi;
+out = [dEuler1;dEuler2;dw1;dw2];

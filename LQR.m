@@ -1,0 +1,33 @@
+function Tw = LQR(X)
+global  wo Ixx Iyy Izz C Iw
+Euler = X(1:3);
+Eulerdot = X(4:6);
+Omega = X(7:10);
+phi = Euler(1);
+theta = Euler(2);
+psi = Euler(3);
+phidot = Eulerdot(1);
+thetadot = Eulerdot(2);
+psidot = Eulerdot(3);
+a1 = (Izz-Iyy)*wo^2/Ixx;
+a2 = (Ixx+Izz-Iyy)*wo/Ixx;
+a3 = (Iyy-Ixx-Izz)*wo/Izz;
+a4 = (Ixx-Iyy)*wo^2/Izz;
+b1 = 1/Ixx;
+b2 = 1/Iyy;
+b3 = 1/Izz;
+A = [0 1 0 0 0 0;a1 0 0 0 0 a2;0 0 0 1 0 0;0 0 0 0 0 0;0 0 0 0 0 1;0 a3 0 0 a4 0];
+B = [0 0 0;b1 0 0;0 0 0;0 b2 0;0 0 0;0 0 b3];
+Q = [2 0 0 0 0 0;0 0 0 0 0 0;0 0 2 0 0 0;0 0 0 0 0 0;0 0 0 0 2 0;0 0 0 0 0 0];
+R = eye(3);
+[K,S,E] = lqr(A,B,Q,R);
+in = [phi phidot theta thetadot psi psidot]';
+Tc = -K*in;
+H = C*Iw*Omega;
+hx = H(1);
+hz = H(3);
+Twx = Tc(1)-hz*wo;
+Twz = Tc(3)+hx*wo;
+Twy = Tc(2);
+Tw = [Twx;Twy;Twz];
+end
